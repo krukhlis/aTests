@@ -28,7 +28,7 @@ void setup()
   oled.setFont(System5x7);
   oled.clear();
   oled.print("-=Please chose menu=-");
-  Serial.println("KRU:witch classed Encoder");
+  Serial.println("KRU:witch classed Encoder v2.0");
   Serial.println("Oled rows:" + String(oled.displayRows()));
   Serial.println("Oled cols:" + String(oled.displayWidth() / (oled.fontWidth() + oled.letterSpacing())));
   // attachInterrupt (digitalPinToInterrupt (encoder0PinA),encIsrPinA,CHANGE);
@@ -45,7 +45,8 @@ void setup()
       ""};
   for (int i = 0; i < 4; i++)
   {
-    menu.menuItems.add(menuItems[i]);
+    //menu.menuItems.add(menuItems[i]);
+    menu.addMenuItem(menuItems[i], LinkedList<KRuMenuItem>());
   }
   menu.currentItem = 0;
   menu.maxItem = menu.menuItems.size() - 1;
@@ -75,9 +76,9 @@ void draw(int encVal, int btnX)
   for (int i = 0; i < menu.menuItems.size(); i++)
   {
     oled.setCursor(1, 3 + i);
-    oled.println(menu.currentItem == i ? ">" + menu.menuItems.get(i) : " " + menu.menuItems.get(i));
+    oled.println(menu.currentItem == i ? ">" + menu.menuItems.get(i).menuItem : " " + menu.menuItems.get(i).menuItem);
   }
-  Serial.println(menu.menuItems.get(menu.currentItem));
+  Serial.println(menu.menuItems.get(menu.currentItem).menuItem);
 }
 
 // the loop routine runs over and over again forever:

@@ -18,15 +18,14 @@ int encoder0Button = PD5;
 KRuEncoder encoder(true);
 KRuMenu menu = KRuMenu();
 
-/*
-void typeof(String a){ Serial.println("it a String a");
+String getType(String a) { return "String"; };
+String getType(KRuScreenSSD1306 a) { return "KRuScreenSSD1306"; };
+String getType(KRuScreen a) { return "KRuScreen"; };
+
+KRuMenuItemClickResponse logClick(String item)
+{
+  Serial.println("Click call back for:" + item);
 }
-void typeof(int a)   { Serial.println("it a int a");}
-void typeof(char* a) { Serial.println("it a char* a");}
-*/
-String getType(String a){return "String";};
-String getType(KRuScreenSSD1306 a){return "KRuScreenSSD1306";};
-String getType(KRuScreen a){return "KRuScreen";};
 
 void setup()
 {
@@ -40,8 +39,8 @@ void setup()
   oled.setFont(System5x7);
   oled.clear();
   oled.print("-=Please chose menu=-");
-  menu.screen= new KRuScreenSSD1306(oled);
-  Serial.println("Type:"+getType(*menu.screen));
+  menu.screen = new KRuScreenSSD1306(oled);
+  Serial.println("Type:" + getType(*menu.screen));
   Serial.println("KRU:witch classed Encoder v2.0");
   Serial.println("Oled rows:" + String(oled.displayRows()));
   Serial.println("Oled cols:" + String(oled.displayWidth() / (oled.fontWidth() + oled.letterSpacing())));
@@ -60,13 +59,13 @@ void setup()
   for (int i = 0; i < 7; i++)
   {
     //menu.menuItems.add(menuItems[i]);
-    menu.addMenuItem(menuItems[i], LinkedList<KRuMenuItem>());
+    menu.addMenuItem(menuItems[i], LinkedList<KRuMenuItem>(), logClick);
   }
   Serial.println("Menu itinitialized...");
   menu.currentItem = 0;
   menu.maxItem = menu.menuItems.size() - 1;
-  menu.firstCol=1;
-  menu.firstRow=3;
+  menu.firstCol = 1;
+  menu.firstRow = 3;
   Serial.println("Before first draw...");
   draw(encoder.encoder0Pos, encoder.encoder0BtnLast);
   Serial.println("After first draw...");
@@ -111,7 +110,7 @@ void draw(int encVal, int btnX)
   Serial.print("\nButton:");
   Serial.println(btnX);
   menu.draw();
-  
+
   Serial.println(menu.menuItems.get(menu.currentItem).menuItem);
 }
 

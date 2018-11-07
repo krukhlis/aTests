@@ -5,15 +5,33 @@ KRuMenuItem::KRuMenuItem()
 {
     ; //this constructor should neve be used!
 }
-KRuMenuItem::KRuMenuItem(String item, LinkedList<KRuMenuItem> sItems)
+KRuMenuItem::KRuMenuItem(String item, LinkedList<KRuMenuItem> sItems, menuItemCallBack cb)
 {
+    if (cb != NULL)
+    {
+        Serial.println("Got callback:" + item);
+    }
+    else
+    {
+        Serial.println("No callback:" + item);
+    }
     menuItem = item;
+    clickCallBack = cb;
     subItems = sItems;
 }
 
-KRuMenuItem::KRuMenuItem(String item)
+KRuMenuItem::KRuMenuItem(String item, menuItemCallBack cb)
 {
+    if (cb != NULL)
+    {
+        Serial.println("Got callback:" + item);
+    }
+    else
+    {
+        Serial.println("No callback:" + item);
+    }
     menuItem = item;
+    clickCallBack = cb;
     subItems = LinkedList<KRuMenuItem>();
 }
 
@@ -34,6 +52,7 @@ int KRuMenuItem::subItemsCnt()
 
 KRuMenuItemClickResponse KRuMenuItem::handleClick()
 {
+    /*
     KRuMenuItemClickResponse res = KRuMenuItemClickResponse();
     if (subItems.size() > 0)
     {
@@ -41,6 +60,11 @@ KRuMenuItemClickResponse KRuMenuItem::handleClick()
         res.subItems = subItems;
     }
     return res;
+    */
+    if (clickCallBack != NULL)
+    {
+        return clickCallBack(menuItem);
+    }
 }
 
 KRuMenu::KRuMenu()
@@ -77,11 +101,16 @@ void KRuMenu::update(int dir, int btn)
     {
         topVisibleItem = currentItem - screen->height + firstRow + 1;
     }
+
+    if (btn == 0)
+    {
+        menuItems.get(currentItem).handleClick();
+    }
 }
 
-void KRuMenu::addMenuItem(String item, LinkedList<KRuMenuItem> subItems)
+void KRuMenu::addMenuItem(String item, LinkedList<KRuMenuItem> subItems, menuItemCallBack cb)
 {
-    KRuMenuItem menuItem = KRuMenuItem(item, subItems);
+    KRuMenuItem menuItem = KRuMenuItem(item, subItems, cb);
     menuItems.add(menuItem);
 }
 
@@ -95,7 +124,7 @@ void KRuMenu::draw()
     for (int i = topVisibleItem; i < min(topVisibleItem + screen->height - firstRow, menuItems.size()); i++)
     {
         String mi = currentItem == i ? ">" + menuItems.get(i).menuItem : " " + menuItems.get(i).menuItem;
-        
-        screen->println(0, firstRow + i - topVisibleItem, padRight(mi,screen->width-1));
+
+        screen->println(0, firstRow + i - topVisibleItem, padRight(mi, screen->width - 1));
     }
 }

@@ -12,18 +12,24 @@ enum KRuMenuItemClickResponseType
   CLOSE_SUBMENU
 };
 struct KRuMenuItemClickResponse;
+class KRuMenuItem;
+
+typedef KRuMenuItemClickResponse (*menuItemCallBack)(String);
+
 class KRuMenuItem
 {
 public:
   String menuItem;
+  menuItemCallBack clickCallBack = NULL;
   LinkedList<KRuMenuItem> subItems;
   KRuMenuItem();
-  KRuMenuItem(String item, LinkedList<KRuMenuItem> sItems);
-  KRuMenuItem(String item);
+  KRuMenuItem(String item, LinkedList<KRuMenuItem> sItems, menuItemCallBack cb);
+  KRuMenuItem(String item, menuItemCallBack cb);
   ~KRuMenuItem();
   bool hasSubItems();
   int subItemsCnt();
   virtual KRuMenuItemClickResponse handleClick();
+  void func(KRuMenuItemClickResponse (*f)(String));
 };
 
 struct KRuMenuItemClickResponse
@@ -46,7 +52,7 @@ public:
   KRuMenu(LinkedList<KRuMenuItem> items, KRuScreen *scr);
   ~KRuMenu();
   void update(int dir, int btn);
-  void addMenuItem(String item, LinkedList<KRuMenuItem> subItems);
+  void addMenuItem(String item, LinkedList<KRuMenuItem> subItems, menuItemCallBack cb);
   void addMenuItem(KRuMenuItem item);
   void draw();
 };

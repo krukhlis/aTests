@@ -5,6 +5,7 @@
 #include "kru_encoder.h"
 #include "LinkedList.h"
 #include "menu.h"
+#include "screen.h"
 // 0X3C+SA0 - 0x3C or 0x3D
 #define I2C_ADDRESS 0x3C
 
@@ -16,6 +17,17 @@ int encoder0Button = PD5;
 
 KRuEncoder encoder(true);
 KRuMenu menu = KRuMenu();
+
+/*
+void typeof(String a){ Serial.println("it a String a");
+}
+void typeof(int a)   { Serial.println("it a int a");}
+void typeof(char* a) { Serial.println("it a char* a");}
+*/
+String getType(String a){return "String";};
+String getType(KRuScreenSSD1306 a){return "KRuScreenSSD1306";};
+String getType(KRuScreen a){return "KRuScreen";};
+
 void setup()
 {
   // initialize serial communication at 9600 bits per second:
@@ -28,6 +40,8 @@ void setup()
   oled.setFont(System5x7);
   oled.clear();
   oled.print("-=Please chose menu=-");
+  menu.screen= new KRuScreenSSD1306(oled);
+  Serial.println("Type:"+getType(*menu.screen));
   Serial.println("KRU:witch classed Encoder v2.0");
   Serial.println("Oled rows:" + String(oled.displayRows()));
   Serial.println("Oled cols:" + String(oled.displayWidth() / (oled.fontWidth() + oled.letterSpacing())));
@@ -43,14 +57,19 @@ void setup()
       "Probe 2 Controller",
       "Advanced Settings",
       ""};
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < 7; i++)
   {
     //menu.menuItems.add(menuItems[i]);
     menu.addMenuItem(menuItems[i], LinkedList<KRuMenuItem>());
   }
+  Serial.println("Menu itinitialized...");
   menu.currentItem = 0;
   menu.maxItem = menu.menuItems.size() - 1;
+  menu.firstCol=1;
+  menu.firstRow=3;
+  Serial.println("Before first draw...");
   draw(encoder.encoder0Pos, encoder.encoder0BtnLast);
+  Serial.println("After first draw...");
 }
 
 void encIsrPinA()
@@ -63,7 +82,7 @@ void encIsrPinBtn()
   encoder.update(digitalRead(encoder0PinA), digitalRead(encoder0PinB), digitalRead(encoder0Button));
 }
 
-void draw(int encVal, int btnX)
+void draw2(int encVal, int btnX)
 {
   oled.setCursor(1, 1);
   oled.println("Val:" + String(encVal) + "    ");
@@ -78,6 +97,21 @@ void draw(int encVal, int btnX)
     oled.setCursor(1, 3 + i);
     oled.println(menu.currentItem == i ? ">" + menu.menuItems.get(i).menuItem : " " + menu.menuItems.get(i).menuItem);
   }
+  Serial.println(menu.menuItems.get(menu.currentItem).menuItem);
+}
+
+void draw(int encVal, int btnX)
+{
+  oled.setCursor(1, 1);
+  oled.println("Val:" + String(encVal) + "    ");
+  oled.setCursor(1, 2);
+  oled.println("Btn:" + String(btnX) + "    ");
+  Serial.print(encVal);
+  Serial.print("/");
+  Serial.print("\nButton:");
+  Serial.println(btnX);
+  menu.draw();
+  
   Serial.println(menu.menuItems.get(menu.currentItem).menuItem);
 }
 

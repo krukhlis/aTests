@@ -1,6 +1,6 @@
 #include "menu.h"
 #include "LinkedList.h"
-
+#include "kru_utils.h"
 KRuMenuItem::KRuMenuItem()
 {
     ; //this constructor should neve be used!
@@ -32,9 +32,15 @@ int KRuMenuItem::subItemsCnt()
     return subItems.size();
 }
 
-void KRuMenuItem::handleClick()
+KRuMenuItemClickResponse KRuMenuItem::handleClick()
 {
-    //default implementation is blank
+    KRuMenuItemClickResponse res = KRuMenuItemClickResponse();
+    if (subItems.size() > 0)
+    {
+        res.miCRType = HORIZONTAL_SUBITEMS;
+        res.subItems = subItems;
+    }
+    return res;
 }
 
 KRuMenu::KRuMenu()
@@ -42,10 +48,11 @@ KRuMenu::KRuMenu()
     maxItem = 0;
 }
 
-KRuMenu::KRuMenu(LinkedList<KRuMenuItem> items)
+KRuMenu::KRuMenu(LinkedList<KRuMenuItem> items, KRuScreen *scr)
 {
     menuItems = items;
     maxItem = items.size() - 1;
+    screen = scr;
 }
 
 KRuMenu::~KRuMenu()
@@ -63,6 +70,12 @@ void KRuMenu::update(int dir, int btn)
     if (currentItem > maxItem)
     {
         currentItem = 0;
+        topVisibleItem = 0;
+    }
+
+    if (currentItem - screen->height + firstRow + 1 >= 0)
+    {
+        topVisibleItem = currentItem - screen->height + firstRow + 1;
     }
 }
 
@@ -75,4 +88,14 @@ void KRuMenu::addMenuItem(String item, LinkedList<KRuMenuItem> subItems)
 void KRuMenu::addMenuItem(KRuMenuItem item)
 {
     menuItems.add(item);
+}
+
+void KRuMenu::draw()
+{
+    for (int i = topVisibleItem; i < min(topVisibleItem + screen->height - firstRow, menuItems.size()); i++)
+    {
+        String mi = currentItem == i ? ">" + menuItems.get(i).menuItem : " " + menuItems.get(i).menuItem;
+        
+        screen->println(0, firstRow + i - topVisibleItem, padRight(mi,screen->width-1));
+    }
 }

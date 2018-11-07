@@ -2,7 +2,7 @@
 #define kru_menu_h
 #include "Arduino.h"
 #include "LinkedList.h"
-#include "screen.h"
+#include "kru_screen.h"
 
 enum KRuMenuItemClickResponseType
 {

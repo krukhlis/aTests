@@ -4,8 +4,8 @@
 
 #include "kru_encoder.h"
 #include "LinkedList.h"
-#include "menu.h"
-#include "screen.h"
+#include "kru_menu.h"
+#include "kru_screen.h"
 // 0X3C+SA0 - 0x3C or 0x3D
 #define I2C_ADDRESS 0x3C
 

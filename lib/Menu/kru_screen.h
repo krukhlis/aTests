@@ -11,6 +11,7 @@ public:
   KRuScreen();
   KRuScreen(int sWidth, int sHeight, int sColors, uint32_t i2cClock);
   virtual void println(int col, int row, String s);
+  virtual void clearRegion(int col, int startChar, int row, int length);
 };
 
 class KRuScreenSSD1306 : public KRuScreen
@@ -20,6 +21,7 @@ public:
   KRuScreenSSD1306(int sWidth, int sHeight, int sColors, uint32_t i2cClock);
   KRuScreenSSD1306(SSD1306AsciiAvrI2c oledScreen);
   virtual void println(int col, int row, String s);
+  virtual void clearRegion(int col, int startChar, int row, int length);
 };
 
 #endif

@@ -29,6 +29,7 @@ public:
   bool hasSubItems();
   int subItemsCnt();
   virtual KRuMenuItemClickResponse handleClick();
+  KRuMenuItemClickResponse defaultClickHandler();
   void func(KRuMenuItemClickResponse (*f)(String));
 };
 
@@ -51,9 +52,9 @@ public:
   KRuMenu();
   KRuMenu(LinkedList<KRuMenuItem> items, KRuScreen *scr);
   ~KRuMenu();
-  void update(int dir, int btn);
+  virtual void update(int dir, int btn);
   void addMenuItem(String item, LinkedList<KRuMenuItem> subItems, menuItemCallBack cb);
   void addMenuItem(KRuMenuItem item);
-  void draw();
+  virtual void draw();
 };
 #endif

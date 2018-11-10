@@ -6,6 +6,7 @@
 #include "LinkedList.h"
 #include "kru_menu.h"
 #include "kru_screen.h"
+#include "kru_menu_sets.h"
 // 0X3C+SA0 - 0x3C or 0x3D
 #define I2C_ADDRESS 0x3C
 
@@ -21,6 +22,8 @@ KRuMenu menu = KRuMenu();
 String getType(String a) { return "String"; };
 String getType(KRuScreenSSD1306 a) { return "KRuScreenSSD1306"; };
 String getType(KRuScreen a) { return "KRuScreen"; };
+
+KRuMenuPlusMinus m2=KRuMenuPlusMinus(String("aaa"), 1.0f, 10.0f, 0.0f, &KRuScreenSSD1306(oled));
 
 KRuMenuItemClickResponse logClick(String item)
 {
@@ -41,12 +44,12 @@ void setup()
   oled.print("-=Please chose menu=-");
   menu.screen = new KRuScreenSSD1306(oled);
   Serial.println("Type:" + getType(*menu.screen));
-  Serial.println("KRU:witch classed Encoder v2.0");
+  Serial.println("KRU:switch classed Encoder v2.0");
   Serial.println("Oled rows:" + String(oled.displayRows()));
   Serial.println("Oled cols:" + String(oled.displayWidth() / (oled.fontWidth() + oled.letterSpacing())));
-  // attachInterrupt (digitalPinToInterrupt (encoder0PinA),encIsrPinA,CHANGE);
-  // attachInterrupt (digitalPinToInterrupt (encoder0Button),encIsrPinBtn,CHANGE);
-
+  m2.screen =  new KRuScreenSSD1306(oled);// = &KRuMenuPlusMinus(String("aaa"), 1.0f, 10.0f, 0.0f, &KRuScreenSSD1306(oled));
+  m2.firstCol = 3;
+  m2.firstRow = 3;
   String menuItems[] = {
       "Set Timer 1",
       "Set Timer 2",
@@ -105,12 +108,12 @@ void draw(int encVal, int btnX)
   oled.println("Val:" + String(encVal) + "    ");
   oled.setCursor(1, 2);
   oled.println("Btn:" + String(btnX) + "    ");
-  Serial.print(encVal);
+  Serial.print(String(encVal));
   Serial.print("/");
   Serial.print("\nButton:");
-  Serial.println(btnX);
-  menu.draw();
-
+  Serial.println(String(btnX));
+  //menu.draw();
+  m2.draw();
   Serial.println(menu.menuItems.get(menu.currentItem).menuItem);
 }
 
@@ -121,7 +124,17 @@ void loop()
 
   if (encoder.hasChanged)
   {
-    menu.update((BOTH == encoder.lastChange || ROTATOR == encoder.lastChange) ? encoder.encoder0Dir : 0, encoder.encoder0BtnLast);
+    //menu.update((BOTH == encoder.lastChange || ROTATOR == encoder.lastChange) ? encoder.encoder0Dir : 0, encoder.encoder0BtnLast);
+    if (true)
+    {
+     // Serial.println("m2 is not null-!!!");
+      m2.update((BOTH == encoder.lastChange || ROTATOR == encoder.lastChange) ? encoder.encoder0Dir : 0, encoder.encoder0BtnLast);
+     // Serial.println("m2 is null!!!+");
+    }
+    else
+    {
+      Serial.println("m2 is null!!!");
+    }
     Serial.println("Last Change:" + String(encoder.lastChange));
     draw(encoder.encoder0Pos, encoder.encoder0BtnLast);
   }

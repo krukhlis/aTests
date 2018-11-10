@@ -50,9 +50,7 @@ int KRuMenuItem::subItemsCnt()
     return subItems.size();
 }
 
-KRuMenuItemClickResponse KRuMenuItem::handleClick()
-{
-    /*
+KRuMenuItemClickResponse KRuMenuItem::defaultClickHandler(){
     KRuMenuItemClickResponse res = KRuMenuItemClickResponse();
     if (subItems.size() > 0)
     {
@@ -60,10 +58,15 @@ KRuMenuItemClickResponse KRuMenuItem::handleClick()
         res.subItems = subItems;
     }
     return res;
-    */
+}
+
+KRuMenuItemClickResponse KRuMenuItem::handleClick()
+{
     if (clickCallBack != NULL)
     {
         return clickCallBack(menuItem);
+    } else {
+        return defaultClickHandler();
     }
 }
 

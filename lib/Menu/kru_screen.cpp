@@ -21,6 +21,10 @@ void KRuScreen::println(int col, int row, String s)
     //default implementation does nothing
 }
 
+void KRuScreen::clearRegion(int col, int startChar, int row, int length){
+    //default implementation does nothing
+}
+
 KRuScreenSSD1306::KRuScreenSSD1306(int sWidth, int sHeight, int sColors, uint32_t i2cClock)
 {
     width = sWidth;
@@ -44,6 +48,11 @@ void KRuScreenSSD1306::println(int col, int row, String s)
 {
     int xRow = (row > height - 1) ? row % height : row;
     int xCol = (col > width - 1) ? col % width : col;
+    //int xCol = col;int xRow = row;
     oled.setCursor(xCol, xRow);
     oled.println(s);
+}
+
+void KRuScreenSSD1306::clearRegion(int col, int startChar, int row, int length){
+    oled.clearField(col + oled.fieldWidth(startChar), row, length);
 }
